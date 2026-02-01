@@ -3,26 +3,28 @@ import { Sparkles, Utensils } from 'lucide-react';
 import { ImageUploader } from '@/components/ImageUploader';
 import { FoodAnalysisResult, NutritionData } from '@/components/FoodAnalysisResult';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'sonner';
 
-// Simulated AI analysis function
-const analyzeFood = async (_imageData: string): Promise<NutritionData> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 2500));
+// Real AI analysis function
+const analyzeFood = async (imageData: string): Promise<NutritionData> => {
+  const { data, error } = await supabase.functions.invoke('analyze-food', {
+    body: { image: imageData }
+  });
 
-  // Return simulated analysis result
-  return {
-    totalCalories: 520,
-    protein: 25,
-    carbs: 45,
-    fat: 22,
-    fiber: 8,
-    foods: [
-      { name: '鸡胸肉', portion: '约 150g', calories: 248, confidence: 0.94 },
-      { name: '米饭', portion: '约 100g', calories: 130, confidence: 0.91 },
-      { name: '西兰花', portion: '约 80g', calories: 28, confidence: 0.88 },
-      { name: '橄榄油', portion: '约 1 汤匙', calories: 114, confidence: 0.75 },
-    ],
-  };
+  if (error) {
+    throw new Error(error.message || '分析请求失败');
+  }
+
+  if (data?.error) {
+    throw new Error(data.error);
+  }
+
+  if (!data?.success || !data?.data) {
+    throw new Error('未获取到分析结果');
+  }
+
+  return data.data as NutritionData;
 };
 
 export default function Index() {
@@ -40,8 +42,10 @@ export default function Index() {
     try {
       const result = await analyzeFood(preview);
       setAnalysisResult(result);
+      toast.success('分析完成！');
     } catch (error) {
       console.error('Analysis failed:', error);
+      toast.error(error instanceof Error ? error.message : '分析失败，请重试');
     } finally {
       setIsAnalyzing(false);
     }
