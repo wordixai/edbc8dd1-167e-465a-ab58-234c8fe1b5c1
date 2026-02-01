@@ -61,7 +61,11 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				calories: 'hsl(var(--calories))',
+				protein: 'hsl(var(--protein))',
+				carbs: 'hsl(var(--carbs))',
+				fat: 'hsl(var(--fat))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -91,12 +95,6 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'spin-slow': 'spin-slow 3s linear infinite',
 				'bounce-soft': 'bounce-soft 2s ease-in-out infinite'
-			},
-			colors: {
-				calories: 'hsl(var(--calories))',
-				protein: 'hsl(var(--protein))',
-				carbs: 'hsl(var(--carbs))',
-				fat: 'hsl(var(--fat))'
 			}
 		}
 	},
